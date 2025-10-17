@@ -1,0 +1,26 @@
+stages:
+  preprocess:
+    cmd: python data/preprocess.py
+    deps:
+      - data/preprocess.py
+    outs:
+      - data/train.csv
+      - data/test.csv 
+
+  train:
+    cmd: python data/train.py
+    deps:
+      - data/train.py
+      - data/train.csv
+    outs:
+      - movie_model.pkl
+
+  validate:
+    cmd: python data/validate.py
+    deps:
+      - data/validate.py
+      - data/test.csv
+      - movie_model.pkl
+    outs:
+      - metrics.json
+      - confusion_matrix.png
