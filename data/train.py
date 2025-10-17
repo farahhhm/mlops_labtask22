@@ -1,24 +1,21 @@
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 import joblib
 
-# 1. Load training data
+# Load data
 df = pd.read_csv('data/train.csv')
+X = df['description']
+y = df['label']
 
-# 2. Select features and labels (match your preprocess.py)
-X = df['description']   # Movie descriptions (text)
-y = df['label']         # Labels (genres/categories)
-
-# 3. Convert text to numeric features
-vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
+# TF-IDF
+vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)  # smaller matrix
 X_tfidf = vectorizer.fit_transform(X)
 
-# 4. Train model
-model = LogisticRegression(max_iter=200, random_state=42)
+# Train model (faster)
+model = RandomForestClassifier(n_estimators=20, n_jobs=-1, random_state=42)
 model.fit(X_tfidf, y)
 
-# 5. Save trained model and vectorizer
+# Save model
 joblib.dump((model, vectorizer), 'movie_model.pkl')
-
-print("Model trained and saved successfully as 'movie_model.pkl'")
+print("Model trained and saved successfully")
